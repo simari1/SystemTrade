@@ -1,6 +1,6 @@
 from pandas_datareader import data
 import pandas as pd
-    import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import datetime
 import talib as ta
 import numpy as np
