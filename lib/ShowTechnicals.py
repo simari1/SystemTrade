@@ -34,10 +34,9 @@ def show_technicals(start, end, code):
     plt.plot(date, df.sma01, label = "sma01_" + str(span01), color = "slateblue",  lw=2)
     plt.plot(date, df.sma02, label = "sma02_" + str(span02), color = "red", lw=3)
     plt.plot(date, df.sma03, label = "sma03_" + str(span03), color = "green", lw=5)
+    plt.rcParams["font.size"] = 18
     plt.fill_between(date, df["upper"], df["lower"], color = "gray", alpha = 0.3)
     plt.title("Price with Bolinger", color = "white", backgroundcolor = "grey", size = 40, loc = "center")
-    plt.rcParams["font.size"] = 18
-    
     #ゴールデン・デッドクロスの検出
     df["cross_SMA"] = gc.find_cross(df["sma02"], df["sma03"])
     df["cross_SMA2"] = gc.find_cross(df["sma01"], df["sma02"])
@@ -48,7 +47,6 @@ def show_technicals(start, end, code):
     plt.plot(date, df.sma02, '-X', markevery=df_tmp[df_tmp.cross_SMA == "DC"].tmpindex.tolist(), markerfacecolor='green', markeredgecolor='green', markersize=20)
     plt.plot(date, df.sma02, '-o', markevery=df_tmp[df_tmp.cross_SMA2 == "GC"].tmpindex.tolist(), markerfacecolor='red', markeredgecolor='red', markersize=20)
     plt.plot(date, df.sma02, '-X', markevery=df_tmp[df_tmp.cross_SMA2 == "DC"].tmpindex.tolist(), markerfacecolor='green', markeredgecolor='green', markersize=20)
-
     plt.grid()
     plt.legend()
 
@@ -67,7 +65,6 @@ def show_technicals(start, end, code):
     plt.subplot(5, 1, 4)
     plt.plot(date, df.macd, label = "macd", color = "green",  lw=2)
     plt.plot(date, df.macdsignal, label = "macdsignal", color = "red", lw=3)
-    
     #ゴールデン・デッドクロスの検出
     df["cross_MACD"] = gc.find_cross(df["macd"], df["macdsignal"])
     #https://stackoverflow.com/questions/44355016/pandas-plot-data-frame-object-with-marker
@@ -75,7 +72,6 @@ def show_technicals(start, end, code):
     df_tmp["tmpindex"] = df_tmp.index - 1
     plt.plot(date, df.macd, '-o', markevery=df_tmp[df_tmp.cross_MACD == "GC"].tmpindex.tolist(), markerfacecolor='red', markeredgecolor='red', markersize=20)
     plt.plot(date, df.macdsignal, '-X', markevery=df_tmp[df_tmp.cross_MACD == "DC"].tmpindex.tolist(), markerfacecolor='green', markeredgecolor='green', markersize=20)
-
     plt.title("MACD", color = "white",size = 40, backgroundcolor = "grey")
     plt.rcParams["font.size"] = 18
     plt.legend()
