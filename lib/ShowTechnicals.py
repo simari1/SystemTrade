@@ -87,4 +87,4 @@ def show_technicals(start, end, code):
     plt.show()
 
 if __name__ == '__main__':
-    show_technicals((datetime.datetime.today() + relativedelta.relativedelta(years=-1)), datetime.datetime.today(), "^N225")
+    show_technicals((datetime.datetime.today() + relativedelta.relativedelta(years=-6)), datetime.datetime.today(), "^N225")
