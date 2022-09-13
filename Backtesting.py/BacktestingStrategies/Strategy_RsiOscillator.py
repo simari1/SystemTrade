@@ -3,7 +3,11 @@ from backtesting.lib import crossover, barssince
 import pandas as pad
 import talib as ta
 from backtesting.lib import crossover, resample_apply
- 
+
+'''
+POC用のStrategyを含む
+'''
+
 class RsiOscillator(Strategy):
     upper_bound = 70
     lower_bound = 30
