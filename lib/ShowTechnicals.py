@@ -26,10 +26,11 @@ def show_technicals(start, end, code):
     df["macd"], df["macdsignal"], df["macdhist"] = ta.MACD(close, fastperiod=12, slowperiod=26, signalperiod=9)
     df["RSI"] = ta.RSI(close, timeperiod=14)
     df["upper"], df["middle"], df["lower"] = ta.BBANDS(close, timeperiod=span02, nbdevdn=2, nbdevup = 2, matype = 0)
+    df["atr"] = ta.ATR(np.array(df['High']).astype("double"), np.array(df['Low']).astype("double"), np.array(df['Close']).astype("double"), timeperiod=14)
 
-    plt.figure(figsize=(30, 40))
+    plt.figure(figsize=(50, 50))
     
-    plt.subplot(5, 1, 1)
+    plt.subplot(6, 1, 1)
     plt.plot(date, close, label = "Stock price", color = "grey", lw=1)
     plt.plot(date, df.sma01, label = "sma01_" + str(span01), color = "slateblue",  lw=2)
     plt.plot(date, df.sma02, label = "sma02_" + str(span02), color = "red", lw=3)
@@ -50,19 +51,35 @@ def show_technicals(start, end, code):
     plt.grid()
     plt.legend()
 
-    plt.subplot(5, 1, 2)
+    plt.subplot(6, 1, 2)
     plt.bar(date, df.Volume, label="Volume", color = "grey")
     plt.rcParams["font.size"] = 18
     plt.legend()
 
-    plt.subplot(5, 1, 3)
+    plt.subplot(6, 1, 3)
+    # plt.plot(date, df["atr"])
+    plt.fill_between(date, df["atr"], alpha = 0.5, color = "grey", label="ATR")
+    plt.title("ATR", color = "white",size = 40, backgroundcolor = "grey")
+    plt.rcParams["font.size"] = 18
+    plt.legend()
+
+    plt.subplot(6, 1, 4)
+    plt.fill_between(date, df["RSI"], alpha = 0.5, color = "grey", label="RSI")
+    plt.title("RSI", color = "white",size = 40, backgroundcolor = "grey")
+    plt.axhline(y = 30, color = "grey", linestyle="dashed")
+    plt.axhline(y = 70, color = "grey", linestyle="dashed")
+    plt.ylim(0, 100)
+    plt.rcParams["font.size"] = 18
+    plt.legend()
+
+    plt.subplot(6, 1, 5)
     plt.fill_between(date, df["macdhist"], alpha = 0.5, color = "grey", label="MACD hist")
     plt.title("MACD History", color = "white",size = 40, backgroundcolor = "grey")
     plt.axhline(y = 0, color = "grey", linestyle="dashed")
     plt.rcParams["font.size"] = 18
     plt.legend()
 
-    plt.subplot(5, 1, 4)
+    plt.subplot(6, 1, 6)
     plt.plot(date, df.macd, label = "macd", color = "green",  lw=2)
     plt.plot(date, df.macdsignal, label = "macdsignal", color = "red", lw=3)
     #ゴールデン・デッドクロスの検出
@@ -76,15 +93,11 @@ def show_technicals(start, end, code):
     plt.rcParams["font.size"] = 18
     plt.legend()
 
-    plt.subplot(5, 1, 5)
-    plt.fill_between(date, df["RSI"], alpha = 0.5, color = "grey", label="RSI")
-    plt.title("RSI", color = "white",size = 40, backgroundcolor = "grey")
-    plt.axhline(y = 30, color = "grey", linestyle="dashed")
-    plt.axhline(y = 70, color = "grey", linestyle="dashed")
-    plt.ylim(0, 100)
-    plt.rcParams["font.size"] = 18
-    plt.legend()
+
+
     plt.show()
+
+
 
 if __name__ == '__main__':
     show_technicals((datetime.datetime.today() + relativedelta.relativedelta(years=-6)), datetime.datetime.today(), "^N225")
