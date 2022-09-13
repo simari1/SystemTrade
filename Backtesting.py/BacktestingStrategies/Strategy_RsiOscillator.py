@@ -57,7 +57,7 @@ class RsiOscillator_WithShortPosition(Strategy):
     def next(self): # チャートデータの行ごとに呼び出される
         if crossover(self.daily_rsi, self.upper_bound):
             #売りシグナル
-            if self.position.is_long:
+            if self.position.is_long or not self.position:
                 #買いポジションを持っていた場合損切
                 self.position.close()
                 self.sell()
