@@ -5,6 +5,7 @@ import pandas as pad
 import talib as ta
  
 def BB(close, n, nu, nd):
+    # df["upper"], df["middle"], df["lower"] = ta.BBANDS(close, timeperiod=span02, nbdevdn=2, nbdevup = 2, matype = 0)
     upper, middle, lower = ta.BBANDS(close, timeperiod=n, nbdevup=nu, nbdevdn=nd, matype=0)
     return upper, lower
 

@@ -2,7 +2,7 @@ data/companies/*
 data/stocks_price_data/*
 bk/*
 .vscode/*
-
+Backtesting.py/Html/*
 #TEMPLATE
 # Byte-compiled / optimized / DLL files
 __pycache__/
