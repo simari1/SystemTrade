@@ -2,26 +2,26 @@
 
 from backtesting import Strategy
 from backtesting.lib import crossover
-import pandas as pad
+import pandas as pd
 import talib as ta
 
 def EMA_Backtesting(values, n):
-    close = pad.Series(values)
+    close = pd.Series(values)
     return ta.EMA(close, timeperiod=n)
 
 class EmaCrossStrategy(Strategy):
-    
+
     # Define the two EMA lags as *class variables*
     # for later optimization
-    n1 = 5
-    n2 = 10
-    
+    EMAshort = 5
+    EMAlong = 10
+
     def init(self):
         # Precompute two moving averages
-        self.ema1 = self.I(EMA_Backtesting, self.data.Close, self.n1)
-        self.ema2 = self.I(EMA_Backtesting, self.data.Close, self.n2)
-    
-    def next(self):       
+        self.ema1 = self.I(EMA_Backtesting, self.data.Close, self.EMAshort)
+        self.ema2 = self.I(EMA_Backtesting, self.data.Close, self.EMAlong)
+
+    def next(self):
         # If ema1 crosses above ema2, buy the asset
         if crossover(self.ema1, self.ema2):
             self.position.close()
@@ -32,23 +32,23 @@ class EmaCrossStrategy(Strategy):
             self.position.close()
 
 class EmaCrossStrategy_WithShortPosition(Strategy):
-    
+
     # Define the two EMA lags as *class variables*
     # for later optimization
-    n1 = 5
-    n2 = 10
-    
+    EMAshort = 5
+    EMAlong = 10
+
     def init(self):
         # Precompute two moving averages
-        self.ema1 = self.I(EMA_Backtesting, self.data.Close, self.n1)
-        self.ema2 = self.I(EMA_Backtesting, self.data.Close, self.n2)
-    
-    def next(self):       
+        self.ema1 = self.I(EMA_Backtesting, self.data.Close, self.EMAshort)
+        self.ema2 = self.I(EMA_Backtesting, self.data.Close, self.EMAlong)
+
+    def next(self):
         # If ema1 crosses above ema2, buy the asset
         if crossover(self.ema1, self.ema2):
             #買いシグナル
             if self.position.is_short or not self.position:
-                 #売りポジションを持っていた場合損切
+                #売りポジションを持っていた場合損切
                 self.position.close()
                 self.buy()
 
