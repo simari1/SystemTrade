@@ -14,6 +14,8 @@ def show_technicals(start, end, code):
 
     df = data.DataReader(code, "yahoo", start, end)
     close = df["Adj Close"]
+    high = df["High"]
+    low = df["Low"]
     date = df.index
 
     span01 = 5
@@ -27,6 +29,7 @@ def show_technicals(start, end, code):
     df["RSI"] = ta.RSI(close, timeperiod=14)
     df["upper"], df["middle"], df["lower"] = ta.BBANDS(close, timeperiod=span02, nbdevdn=2, nbdevup = 2, matype = 0)
     df["atr"] = ta.ATR(np.array(df['High']).astype("double"), np.array(df['Low']).astype("double"), np.array(df['Close']).astype("double"), timeperiod=14)
+
 
     plt.figure(figsize=(50, 50))
     
@@ -92,6 +95,36 @@ def show_technicals(start, end, code):
     plt.title("MACD", color = "white",size = 40, backgroundcolor = "grey")
     plt.rcParams["font.size"] = 18
     plt.legend()
+
+
+    #ドンチャ
+    dnchn_span01 = 20
+    dnchn_span02 = 40
+    df["dnchn_hi"] = high.rolling(window = dnchn_span01).max()
+    df["dnchn_lo"] = low.rolling(window = dnchn_span01).min()
+    df["dnchn_m"] = (df["dnchn_hi"] + df["dnchn_lo"]) / 2
+    # df["dnchn_hi_2"] = high.rolling(window = dnchn_span02).max()
+    # df["dnchn_lo_2"] = low.rolling(window = dnchn_span02).min()
+    # df["dnchn_m_2"] = (df["dnchn_hi_2"] + df["dnchn_lo_2"]) / 2
+
+    plt.figure(figsize=(50, 20))
+
+    plt.plot(date, close, label = "Stock price", color = "grey", lw=1)
+    plt.plot(date, df["dnchn_hi"], label = "dnchn_hi" + str(dnchn_span01), color = "red",  lw=3)
+    plt.plot(date, df["dnchn_lo"], label = "dnchn_lo" + str(dnchn_span01), color = "red", lw=3)
+    plt.plot(date, df["dnchn_m"], label = "dnchn_m" + str(dnchn_span01), color = "purple", lw=5)
+    plt.fill_between(date, df["dnchn_hi"], df["dnchn_lo"], color = "red", alpha = 0.1)
+
+    # plt.plot(date, df["dnchn_hi_2"], label = "dnchn_hi_2" + str(dnchn_span02), color = "green",  lw=3)
+    # plt.plot(date, df["dnchn_lo_2"], label = "dnchn_lo_2" + str(dnchn_span02), color = "green", lw=3)
+    # plt.plot(date, df["dnchn_m_2"], label = "dnchn_m_2" + str(dnchn_span02), color = "magenta", lw=5)
+    # plt.fill_between(date, df["dnchn_hi_2"], df["dnchn_lo_2"], color = "green", alpha = 0.1)
+
+    plt.rcParams["font.size"] = 18
+    plt.title("Price with Donchian", color = "white", backgroundcolor = "grey", size = 40, loc = "center")
+    plt.grid()
+    plt.legend()
+
 
 
 
