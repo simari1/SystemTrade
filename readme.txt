@@ -21,3 +21,6 @@ https://www.insource.co.jp/python-gakuin/mail-backnumber/vol30.html
     参考HandsOn
     Backtesting.py - Full course in python
     https://www.youtube.com/watch?v=e4ytbIm2Xg0
+
+    損切 Stop Losses in Backtesting.py
+    https://www.youtube.com/watch?v=_R-X7yFxweI
