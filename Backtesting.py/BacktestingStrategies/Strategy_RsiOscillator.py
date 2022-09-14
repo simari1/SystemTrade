@@ -23,7 +23,11 @@ class RsiOscillator(Strategy):
         if crossover(self.rsi, self.upper_bound):
             self.position.close()
         elif crossover(self.rsi, self.lower_bound):
-            self.buy()
+            if not self.position:
+                self.buy() # 買い
+            else:
+                self.position.close()
+                self.buy() # 買い
 
 class RsiOscillator_WithShortPosition(Strategy):
     upper_bound = 60
@@ -37,17 +41,18 @@ class RsiOscillator_WithShortPosition(Strategy):
     def next(self): # チャートデータの行ごとに呼び出される
         if crossover(self.daily_rsi, self.upper_bound):
             #売りシグナル
-            if self.position.is_long or not self.position:
-                #買いポジションを持っていた場合損切
+            if not self.position:
+                self.sell()
+            else:
                 self.position.close()
                 self.sell()
         elif crossover(self.lower_bound, self.daily_rsi):
             #買いシグナル
-            if self.position.is_short or not self.position:
-                #売りポジションを持っていた場合損切
+            if not self.position:
+                self.buy() # 買い
+            else:
                 self.position.close()
-                price = self.data.Close[-1]
-                self.buy(tp = price + price * 0.05)
+                self.buy() # 買い
                 # self.buy()
 class RsiOscillator_WithWeekly(Strategy):
     upper_bound = 70

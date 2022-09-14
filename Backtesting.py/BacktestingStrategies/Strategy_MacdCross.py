@@ -17,7 +17,11 @@ class MACDCross(Strategy):
 
     def next(self): # チャートデータの行ごとに呼び出される
         if crossover(self.macd, self.macdsignal): #macdがsignalを上回った時
-            self.buy()
+            if not self.position:
+                self.buy() # 買い
+            else:
+                self.position.close()
+                self.buy() # 買い
         elif crossover(self.macdsignal, self.macd): #signalがmacdを上回った時
             self.position.close()
 
@@ -33,13 +37,15 @@ class MACDCross_WithShortPosition(Strategy):
     def next(self): # チャートデータの行ごとに呼び出される
         if crossover(self.macd, self.macdsignal): #macdがsignalを上回った時
             #買いシグナル
-            if self.position.is_short or not self.position:
-                #売りポジションを持っていた場合損切
+            if not self.position:
+                self.buy() # 買い
+            else:
                 self.position.close()
-                self.buy()
+                self.buy() # 買い
         elif crossover(self.macdsignal, self.macd): #signalがmacdを上回った時
             #売りシグナル
-            if self.position.is_long  or not self.position:
-                #買いポジションを持っていた場合損切
+            if not self.position:
+                self.sell()
+            else:
                 self.position.close()
                 self.sell()

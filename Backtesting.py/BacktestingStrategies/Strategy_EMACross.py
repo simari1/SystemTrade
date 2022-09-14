@@ -24,9 +24,11 @@ class EmaCrossStrategy(Strategy):
     def next(self):
         # If ema1 crosses above ema2, buy the asset
         if crossover(self.ema1, self.ema2):
-            self.position.close()
-            self.buy()
-
+            if not self.position:
+                self.buy() # 買い
+            else:
+                self.position.close()
+                self.buy() # 買い
         # Else, if ema1 crosses below ema2, sell it
         elif crossover(self.ema2, self.ema1):
             self.position.close()
@@ -47,15 +49,17 @@ class EmaCrossStrategy_WithShortPosition(Strategy):
         # If ema1 crosses above ema2, buy the asset
         if crossover(self.ema1, self.ema2):
             #買いシグナル
-            if self.position.is_short or not self.position:
-                #売りポジションを持っていた場合損切
+            if not self.position:
+                self.buy() # 買い
+            else:
                 self.position.close()
-                self.buy()
+                self.buy() # 買い
 
         # Else, if ema1 crosses below ema2, sell it
         elif crossover(self.ema2, self.ema1):
             #売りシグナル
-            if self.position.is_long  or not self.position:
-                #買いポジションを持っていた場合損切
+            if not self.position:
+                self.sell()
+            else:
                 self.position.close()
                 self.sell()
