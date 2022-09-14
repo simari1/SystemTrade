@@ -43,9 +43,6 @@ class MACDandBBD(Strategy):
             and crossover(self.data.Close, self.bolupper_sigma):
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif crossover(self.macdsignal, self.macd):
             self.position.close() # 手じまい
 
@@ -69,13 +66,9 @@ class MACDandBBD_WithShortPosition(Strategy):
             #買いシグナル
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif crossover(self.macdsignal, self.macd):
             #売りシグナル
             if not self.position:
                 self.sell()
             else:
                 self.position.close()
-                self.sell()

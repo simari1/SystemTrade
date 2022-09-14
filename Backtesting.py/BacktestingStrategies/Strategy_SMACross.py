@@ -16,9 +16,6 @@ class SmaCross(Strategy):
         if crossover(self.sma1, self.sma2): #sma1がsma2を上回った時
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif crossover(self.sma2, self.sma1):
             self.position.close() # 売り
 
@@ -35,13 +32,9 @@ class SmaCross_WithShortPosition(Strategy):
             #買いシグナル
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif crossover(self.sma2, self.sma1):
             #売りシグナル
             if not self.position:
                 self.sell()
             else:
                 self.position.close()
-                self.sell()

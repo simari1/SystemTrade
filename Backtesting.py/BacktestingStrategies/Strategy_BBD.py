@@ -25,9 +25,6 @@ class BBsigma(Strategy):
         elif self.data.Close < self.lower or self.data.Open < self.lower:
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
 
         # メモ：これは以下と同じ
         # if self.data.Close[-1] > self.upper[-1] :
@@ -51,12 +48,8 @@ class BBsigma_WithShortPosition(Strategy):
                 self.sell()
             else:
                 self.position.close()
-                self.sell()
         #-2σより小さいなら買い
         elif self.data.Close < self.lower or self.data.Open < self.lower:
             #買いシグナル
             if not self.position:
-                self.buy() # 買い
-            else:
-                self.position.close()
                 self.buy() # 買い

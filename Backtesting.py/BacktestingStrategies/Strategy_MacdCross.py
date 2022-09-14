@@ -19,9 +19,6 @@ class MACDCross(Strategy):
         if crossover(self.macd, self.macdsignal): #macdがsignalを上回った時
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif crossover(self.macdsignal, self.macd): #signalがmacdを上回った時
             self.position.close()
 
@@ -39,13 +36,9 @@ class MACDCross_WithShortPosition(Strategy):
             #買いシグナル
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif crossover(self.macdsignal, self.macd): #signalがmacdを上回った時
             #売りシグナル
             if not self.position:
                 self.sell()
             else:
                 self.position.close()
-                self.sell()

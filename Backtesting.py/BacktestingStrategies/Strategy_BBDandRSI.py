@@ -42,9 +42,6 @@ class BBandRSI(Strategy):
             or crossover(self.lower_bound, self.rsi):
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
 
 class BBandRSI_WithShortPosition(Strategy):
     #ボリンジャーバンド用パラメータ
@@ -69,13 +66,9 @@ class BBandRSI_WithShortPosition(Strategy):
                 self.sell()
             else:
                 self.position.close()
-                self.sell()
         #-2σより小さいなら買い
         elif self.data.Close < self.lower\
             or crossover(self.lower_bound, self.rsi):
             #買いシグナル
             if not self.position:
-                self.buy() # 買い
-            else:
-                self.position.close()
                 self.buy() # 買い

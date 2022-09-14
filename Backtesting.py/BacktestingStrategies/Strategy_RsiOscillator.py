@@ -25,9 +25,6 @@ class RsiOscillator(Strategy):
         elif crossover(self.rsi, self.lower_bound):
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
 
 class RsiOscillator_WithShortPosition(Strategy):
     upper_bound = 60
@@ -45,15 +42,10 @@ class RsiOscillator_WithShortPosition(Strategy):
                 self.sell()
             else:
                 self.position.close()
-                self.sell()
         elif crossover(self.lower_bound, self.daily_rsi):
             #買いシグナル
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
-                # self.buy()
 class RsiOscillator_WithWeekly(Strategy):
     upper_bound = 70
     lower_bound = 30

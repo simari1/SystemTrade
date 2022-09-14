@@ -40,9 +40,6 @@ class MACDandRSI(Strategy):
             and crossover(self.macd, self.macdsignal):
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
 
 class MACDandRSI_WithShortPosition(Strategy):
     #MACD用パラメータ
@@ -66,12 +63,8 @@ class MACDandRSI_WithShortPosition(Strategy):
                 self.sell()
             else:
                 self.position.close()
-                self.sell()
         elif self.rsi[-1] < self.lower_bound\
             and crossover(self.macd, self.macdsignal):
             #買いシグナル
             if not self.position:
-                self.buy() # 買い
-            else:
-                self.position.close()
                 self.buy() # 買い

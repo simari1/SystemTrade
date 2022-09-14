@@ -48,9 +48,6 @@ class DnchnBreakout(Strategy):
         if price > self.dnchn_high[-2]:
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif price < self.dnchn_low[-2]:
             #売りポジションを持っていた場合損切
             self.position.close() # 売り
@@ -70,13 +67,10 @@ class DnchnBreakout_WithShortPosition(Strategy):
         if price > self.dnchn_high[-2]:
             if not self.position:
                 self.buy() # 買い
-            else:
-                self.position.close()
-                self.buy() # 買い
         elif price < self.dnchn_low[-2]:
+            #売りシグナル
             if not self.position:
                 self.sell()
             else:
                 self.position.close()
-                self.sell()
 
