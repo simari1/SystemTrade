@@ -11,27 +11,21 @@ class MACDCross(Strategy):
     MACDshort = 12 #短期EMAの期間
     MACDlong = 26 #長期EMAの期間
     MACDsignal = 9 #シグナル（MACDのSMA）の期間
-    # MACDshort = 30 #短期EMAの期間
-    # MACDlong = 40 #長期EMAの期間
-    # MACDsignal = 10 #シグナル（MACDのSMA）の期間
 
     def init(self):
         self.macd, self.macdsignal = self.I(MACD, self.data.Close, self.MACDshort, self.MACDlong, self.MACDsignal)
 
     def next(self): # チャートデータの行ごとに呼び出される
         if crossover(self.macd, self.macdsignal): #macdがsignalを上回った時
-            self.buy() # 買い
+            self.buy()
         elif crossover(self.macdsignal, self.macd): #signalがmacdを上回った時
-            self.position.close() # 売り
+            self.position.close()
 
 
 class MACDCross_WithShortPosition(Strategy):
     MACDshort = 12 #短期EMAの期間
     MACDlong = 26 #長期EMAの期間
     MACDsignal = 9 #シグナル（MACDのSMA）の期間
-    # MACDshort = 30 #短期EMAの期間
-    # MACDlong = 40 #長期EMAの期間
-    # MACDsignal = 10 #シグナル（MACDのSMA）の期間
 
     def init(self):
         self.macd, self.macdsignal = self.I(MACD, self.data.Close, self.MACDshort, self.MACDlong, self.MACDsignal)
