@@ -24,3 +24,6 @@ https://www.insource.co.jp/python-gakuin/mail-backnumber/vol30.html
 
     損切 Stop Losses in Backtesting.py
     https://www.youtube.com/watch?v=_R-X7yFxweI
+
+    Strategyの検証 Backtest Validation in Python (Fooled By Randomness)
+    https://www.youtube.com/watch?v=lXJclKmQR-k&t=755s
