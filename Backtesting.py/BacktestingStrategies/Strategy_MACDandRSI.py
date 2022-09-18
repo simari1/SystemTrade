@@ -8,7 +8,6 @@ https://www.sevendata.co.jp/shihyou/mix/macdrsi.html
     MACDがデットクロスする、または14日RSIが80％になった場合
 '''
 
-
 from backtesting import Strategy
 from backtesting.lib import crossover
 import pandas as pad

@@ -1,7 +1,5 @@
 #https://optrip.xyz/?p=3557
 from backtesting import Strategy
-from backtesting.lib import crossover
-import pandas as pad
 import talib as ta
 
 def BB(close, n, nu, nd):
@@ -41,14 +39,12 @@ class BBsigma_WithShortPosition(Strategy):
         self.upper, self.lower = self.I(BB, self.data.Close, self.n, self.nu, self.nd)
 
     def next(self): # チャートデータの行ごとに呼び出される
-        #+2σより大きいなら売り
         if self.data.Close > self.upper or self.data.Open > self.upper:
             #売りシグナル
             if not self.position:
                 self.sell()
             else:
                 self.position.close()
-        #-2σより小さいなら買い
         elif self.data.Close < self.lower or self.data.Open < self.lower:
             #買いシグナル
             if not self.position:
