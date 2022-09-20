@@ -87,10 +87,14 @@ class EntryRSI50andExitBB(Strategy):
         self.rsi = self.I(ta.RSI, self.data.Close, self.rsi_window)
 
     def next(self): # チャートデータの行ごとに呼び出される
-        if self.data.Close > self.upper:
-            #売りシグナル
+        rsi_previous = self.rsi[-1]
+        rsi_2previous = self.rsi[-2]
+
+        if self.data.Close > self.upper or self.data.Low > self.upper:
+            #BBDの上限に当たったら売りシグナル
             self.position.close()
-        elif crossover(self.rsi, self.lower_bound):
+        elif rsi_2previous < 50 and rsi_previous > 50:
+            #RSIの50を下から上へ突き抜けたら
             if not self.position:
                 self.buy() # 買い
 
@@ -100,8 +104,8 @@ class EntryRSI50andExitBB_WithShortPosition(Strategy):
     nu = 2 #何σか
     nd = 2 #何σか
     #RSI用パラメータ
-    upper_bound = 45
-    lower_bound = 55
+    upper_bound = 50
+    lower_bound = 50
     rsi_window = 14
 
     def init(self):
@@ -109,13 +113,18 @@ class EntryRSI50andExitBB_WithShortPosition(Strategy):
         self.rsi = self.I(ta.RSI, self.data.Close, self.rsi_window)
 
     def next(self): # チャートデータの行ごとに呼び出される
-        if self.data.Close > self.upper:
+        rsi_previous = self.rsi[-1]
+        rsi_2previous = self.rsi[-2]
+
+        if self.data.Close > self.upper and self.position:
             self.position.close()
-        elif self.data.Close < self.lower:
+        elif self.data.Close < self.lower and self.position:
             self.position.close()
-        elif crossover(self.rsi, self.lower_bound):
+        elif rsi_2previous < 50 and rsi_previous > 50:
+            #RSIの50を下から上へ突き抜けたら
             if not self.position:
                 self.buy()
-        elif crossover(self.upper_bound, self.rsi):
+        elif rsi_2previous > 50 and rsi_previous < 50:
+            #RSIの50を上から下へ突き抜けたら
             if not self.position:
                 self.sell()
