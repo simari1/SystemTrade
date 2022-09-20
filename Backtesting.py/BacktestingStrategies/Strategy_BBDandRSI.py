@@ -92,7 +92,8 @@ class EntryRSI50andExitBB(Strategy):
 
         if self.data.Close > self.upper or self.data.Low > self.upper:
             #BBDの上限に当たったら売りシグナル
-            self.position.close()
+            if self.position:
+                self.position.close()
         elif rsi_2previous < 50 and rsi_previous > 50:
             #RSIの50を下から上へ突き抜けたら
             if not self.position:
@@ -117,9 +118,13 @@ class EntryRSI50andExitBB_WithShortPosition(Strategy):
         rsi_2previous = self.rsi[-2]
 
         if self.data.Close > self.upper and self.position:
-            self.position.close()
+            #BBDの上にあたったら
+            if self.position and self.trades[-1].size > 0:
+                self.position.close()
         elif self.data.Close < self.lower and self.position:
-            self.position.close()
+            #BBDの下にあたったら
+            if self.position and self.trades[-1].size < 0:
+                self.position.close()
         elif rsi_2previous < 50 and rsi_previous > 50:
             #RSIの50を下から上へ突き抜けたら
             if not self.position:
