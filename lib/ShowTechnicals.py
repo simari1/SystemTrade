@@ -80,11 +80,11 @@ def show_technicals(start, end, code):
     plt.figure(figsize=(50, 40))
     #MACD
     fig, ax1 = plt.subplots(figsize=(50, 10))
-    ax1.plot(date, close, label = "Stock price", color = "blue", lw=4)
+    ax1.plot(date, close, label = "Stock price", color = "green", lw=2)
     ax1.fill_between(date, df["upper"], df["lower"], color = "gray", alpha = 0.3)
     ax2 = ax1.twinx()
-    ax2.plot(date, df.macd, label = "macd", color = "green",  lw=2)
-    ax2.plot(date, df.macdsignal, label = "macdsignal", color = "red", lw=3)
+    ax2.plot(date, df.macd, label = "macd", color = "black",  lw=4)
+    ax2.plot(date, df.macdsignal, label = "macdsignal", color = "red", lw=4)
     #ゴールデン・デッドクロスの検出
     df["cross_MACD"] = gc.find_cross(df["macd"], df["macdsignal"])
     #https://stackoverflow.com/questions/44355016/pandas-plot-data-frame-object-with-marker
@@ -111,7 +111,7 @@ def show_technicals(start, end, code):
     plt.plot(date, df["bolingerwidth"],label = "Bolinger width", color = "magenta", lw = 2)
     plt.title("Bolinger width", color = "white",size = 40, backgroundcolor = "grey")
     plt.rcParams["font.size"] = 18
-    plt.yticks(np.arange(0, 1, 0.1))
+    plt.yticks(np.arange(0, 0.5, 0.05))
     plt.legend()
     plt.grid(axis="x")
     plt.show()

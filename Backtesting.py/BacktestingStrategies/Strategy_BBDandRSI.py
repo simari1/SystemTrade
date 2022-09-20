@@ -13,6 +13,8 @@ https://www.sevendata.co.jp/shihyou/mix/borirsi.html
 from backtesting import Strategy
 from backtesting.lib import crossover
 import talib as ta
+import pandas as pd
+import numpy as np
 
 def BB(close, n, nu, nd):
     # df["upper"], df["middle"], df["lower"] = ta.BBANDS(close, timeperiod=span02, nbdevdn=2, nbdevup = 2, matype = 0)
@@ -145,3 +147,55 @@ class EntryRSI50andExitBB_WithShortPosition(Strategy):
         if rsi_previous < 60:        
             if self.position and self.trades[-1].size < 0:
                 self.position.close()
+
+def CalcATR(phigh, plow, pclose, period):
+    high = pd.Series(phigh)
+    low = pd.Series(plow)
+    close = pd.Series(pclose)
+    return ta.ATR(\
+        np.array(high).astype("double"),\
+        np.array(low).astype("double"),\
+        np.array(close).astype("double"),\
+        timeperiod=period)
+
+class EntryRSI50andExitBBWithATRStopLoss(Strategy):
+    #ボリンジャーバンド用パラメータ
+    n = 25 #移動平均日数
+    nu = 2 #何σか
+    nd = 2 #何σか
+    #RSI用パラメータ
+    upper_bound = 50
+    lower_bound = 50
+    rsi_window = 14
+
+    atr_period = 20
+
+    def init(self):
+        self.upper, self.lower = self.I(BB, self.data.Close, self.n, self.nu, self.nd)
+        self.rsi = self.I(ta.RSI, self.data.Close, self.rsi_window)
+        self.atr = self.I(CalcATR, self.data.High,  self.data.Low, self.data.Close, self.atr_period)
+
+    def next(self): # チャートデータの行ごとに呼び出される
+        rsi_previous = self.rsi[-1]
+        rsi_2previous = self.rsi[-2]
+
+        if self.data.Close > self.upper and self.position and self.trades[-1].size > 0:
+            #順張り中でBBDの上にあたったら利益確定
+            self.position.close()
+        elif self.position and self.data.Close[-1] < self.trades[-1].entry_price - self.atr[-1] * 2:
+            #順張り中でATR2倍より下がったら損切
+            self.position.close()
+        elif self.data.Close > self.lower and self.position and self.trades[-1].size < 0:
+            #空売り中でBBDの上にあたったら利益確定
+            self.position.close()
+        elif self.position and self.data.Close[-1] > self.trades[-1].entry_price + self.atr[-1] * 2:
+            #空売り中でATR2倍より上がったら損切
+            self.position.close()
+        elif rsi_2previous < 50 and rsi_previous > 50:
+            #RSIの50を下から上へ突き抜けたら
+            if not self.position:
+                self.buy()
+        elif rsi_2previous > 50 and rsi_previous < 50:
+            #RSIの50を上から下へ突き抜けたら
+            if not self.position:
+                self.sell()
