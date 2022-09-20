@@ -28,6 +28,14 @@ class BBandRSI(Strategy):
     upper_bound = 70
     lower_bound = 30
     rsi_window = 14
+    # n=35
+    # nu=2.8
+    # nd=2.6
+    # upper_bound=75
+    # lower_bound=25
+    # rsi_window=16
+
+# (n=30,nu=2.2,nd=2.7,upper_bound=60,lower_bound=40,rsi_window=10)_optimize.html
 
     def init(self):
         self.upper, self.lower = self.I(BB, self.data.Close, self.n, self.nu, self.nd)
@@ -53,6 +61,12 @@ class BBandRSI_WithShortPosition(Strategy):
     upper_bound = 70
     lower_bound = 30
     rsi_window = 14
+    # n=25
+    # nu=3.0
+    # nd=2.4
+    # upper_bound=70
+    # lower_bound=25
+    # rsi_window=22
 
     def init(self):
         self.upper, self.lower = self.I(BB, self.data.Close, self.n, self.nu, self.nd)
@@ -81,7 +95,7 @@ class EntryRSI50andExitBB(Strategy):
     nd = 2 #何σか
     #RSI用パラメータ
     upper_bound = 70
-    lower_bound = 50
+    lower_bound = 30
     rsi_window = 14
 
     def init(self):
