@@ -1,5 +1,4 @@
 from pandas_datareader import data
-import pandas as pd
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 import datetime
@@ -54,9 +53,11 @@ def show_ichimokukinkou(start, end, code):
     mc = mpf.make_marketcolors(up="#DF0101", down="#00008b", volume="#6E6E6E", edge="inherit", wick="inherit")
     cs  = mpf.make_mpf_style(rc={"font.family":'MS Gothic'}, marketcolors=mc, gridstyle='-')
 
-    fig, ax = mpf.plot(df, type='candle', figsize=(16,6), style = cs, xrotation=0, addplot=lines, returnfig=True, volume = True, title = "一目均衡表",
+    
+    fig, ax = mpf.plot(df, type='candle', figsize=(50,15), style = cs, xrotation=0, addplot=lines, returnfig=True, volume = True, title = "一目均衡表",
                     fill_between=dict(y1=df['span1'].values, y2=df['span2'].values, alpha=0.5, color='gray')) 
     ax[0].legend(labels)
+    plt.show()
 
 if __name__ == '__main__':
     show_ichimokukinkou((datetime.datetime.today() + relativedelta.relativedelta(years=-1)), datetime.datetime.today(), "^N225")
