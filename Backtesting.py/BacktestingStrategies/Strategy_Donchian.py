@@ -1,6 +1,4 @@
-from backtesting import Backtest, Strategy
-from backtesting.lib import crossover
-from backtesting.test import SMA
+from backtesting import Strategy
 import pandas as pd
 import talib as ta
 import numpy as np
@@ -74,3 +72,32 @@ class DnchnBreakout_WithShortPosition(Strategy):
             else:
                 self.position.close()
 
+class DnchnBreakout_WithATRStopLoss(Strategy):
+    dnchn_long = 20
+    dnchn_short = 10
+    atr_period = 20
+
+    def init(self):
+        self.dnchn_high = self.I(CalcDonchian_High, self.data.High, self.dnchn_long)
+        self.dnchn_low = self.I(CalcDonchian_Low, self.data.Low, self.dnchn_short)
+        self.atr = self.I(CalcATR, self.data.High,  self.data.Low, self.data.Close, self.atr_period)
+
+    def next(self): #チャートデータの行ごとに呼び出される
+        price = self.data.Close[-1]
+        atr = self.atr[-1]
+        if self.position and\
+            self.trades[-1].size > 0 and\
+            self.trades[-1].entry_price < price - atr * 2:
+            #順張りの場合はエントリー値よりATRの2倍分下がったら損切
+            self.position.close()
+        elif self.position and\
+            self.trades[-1].size < 0 and\
+            self.trades[-1].entry_price > price + atr * 2:
+            #空売りの場合はエントリー値よりATRの2倍分上がったらしたら損切
+            self.position.close()
+        elif price > self.dnchn_high[-2]:
+            if not self.position:
+                self.buy() # 買い
+        elif price < self.dnchn_low[-2]:
+            #売りポジションを持っていた場合売り
+            self.position.close() # 売り
