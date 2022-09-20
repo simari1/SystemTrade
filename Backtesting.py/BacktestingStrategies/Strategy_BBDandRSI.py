@@ -98,6 +98,12 @@ class EntryRSI50andExitBB(Strategy):
             #RSIの50を下から上へ突き抜けたら
             if not self.position:
                 self.buy() # 買い
+        elif rsi_previous < 40:
+            if self.position and self.trades[-1].size > 0:
+                self.position.close()
+        elif rsi_previous < 60:
+            if self.position and self.trades[-1].size < 0:
+                self.position.close()
 
 class EntryRSI50andExitBB_WithShortPosition(Strategy):
     #ボリンジャーバンド用パラメータ
@@ -133,3 +139,9 @@ class EntryRSI50andExitBB_WithShortPosition(Strategy):
             #RSIの50を上から下へ突き抜けたら
             if not self.position:
                 self.sell()
+        if rsi_previous < 40:
+            if self.position and self.trades[-1].size > 0:
+                self.position.close()
+        if rsi_previous < 60:        
+            if self.position and self.trades[-1].size < 0:
+                self.position.close()

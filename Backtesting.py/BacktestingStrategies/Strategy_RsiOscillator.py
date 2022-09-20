@@ -130,7 +130,10 @@ class RsiOscillator_Entry50(Strategy):
         rsi_previous = self.rsi[-1]
         rsi_2previous = self.rsi[-2]
 
-        if rsi_previous > upper_bound:
+        if rsi_previous > self.upper_bound:
+            if self.position:
+                self.position.close()
+        elif rsi_previous < 40:
             if self.position:
                 self.position.close()
         elif rsi_2previous < 50 and rsi_previous > 50:
@@ -151,7 +154,7 @@ class RsiOscillator_Entry50_WithShortPosition(Strategy):
         rsi_previous = self.daily_rsi[-1]
         rsi_2previous = self.daily_rsi[-2]
 
-        if rsi_previous > 70:
+        if rsi_previous > self.upper_bound:
             #順張り利確
             if self.position and self.trades[-1].size > 0:
                 self.position.close()
@@ -159,7 +162,7 @@ class RsiOscillator_Entry50_WithShortPosition(Strategy):
             #RSIの50を下から上へ突き抜けたら
             if not self.position:
                 self.buy() # 買い
-        if rsi_previous < 30:
+        if rsi_previous < self.lower_bound:
             #空売り利確
             if self.position and self.trades[-1].size < 0:
                 self.position.close()
@@ -167,3 +170,9 @@ class RsiOscillator_Entry50_WithShortPosition(Strategy):
             #RSIの50を下から上へ突き抜けたら
             if not self.position:
                 self.sell() # 買い
+        elif rsi_previous < 40:
+            if self.position and self.trades[-1].size > 0:
+                self.position.close()
+        elif rsi_previous < 60:
+            if self.position and self.trades[-1].size < 0:
+                self.position.close()
