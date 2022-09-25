@@ -73,9 +73,10 @@ class DnchnBreakout_WithShortPosition(Strategy):
                 self.position.close()
 
 class DnchnBreakout_WithATRStopLoss(Strategy):
-    dnchn_long = 20
-    dnchn_short = 10
+    dnchn_long = 40
+    dnchn_short = 20
     atr_period = 20
+    atr_entrytime = 0
 
     def init(self):
         self.dnchn_high = self.I(CalcDonchian_High, self.data.High, self.dnchn_long)
@@ -84,15 +85,16 @@ class DnchnBreakout_WithATRStopLoss(Strategy):
 
     def next(self): #チャートデータの行ごとに呼び出される
         price = self.data.Close[-1]
-        atr = self.atr[-1]
+        atr_entrytime = self.atr[-1]
+
         if self.position and\
             self.trades[-1].size > 0 and\
-            self.trades[-1].entry_price < price - atr * 2:
+            self.trades[-1].entry_price < price - atr_entrytime * 2:
             #順張りの場合はエントリー値よりATRの2倍分下がったら損切
             self.position.close()
         elif self.position and\
             self.trades[-1].size < 0 and\
-            self.trades[-1].entry_price > price + atr * 2:
+            self.trades[-1].entry_price > price + atr_entrytime * 2:
             #空売りの場合はエントリー値よりATRの2倍分上がったらしたら損切
             self.position.close()
         elif price > self.dnchn_high[-2]:

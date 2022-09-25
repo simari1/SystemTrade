@@ -3,6 +3,8 @@ data/stocks_price_data/*
 bk/*
 .vscode/*
 *.html
+kabusapi-Python-v1.7.0/*
+
 #TEMPLATE
 # Byte-compiled / optimized / DLL files
 __pycache__/

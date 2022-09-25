@@ -13,13 +13,21 @@ https://www.sevendata.co.jp/shihyou/mix/borirsi.html
 from backtesting import Strategy
 from backtesting.lib import crossover
 import talib as ta
-import pandas as pd
-import numpy as np
 
 def BB(close, n, nu, nd):
     # df["upper"], df["middle"], df["lower"] = ta.BBANDS(close, timeperiod=span02, nbdevdn=2, nbdevup = 2, matype = 0)
     upper, middle, lower = ta.BBANDS(close, timeperiod=n, nbdevup=nu, nbdevdn=nd, matype=0)
     return upper, lower
+
+def CalcATR(phigh, plow, pclose, period):
+    high = pd.Series(phigh)
+    low = pd.Series(plow)
+    close = pd.Series(pclose)
+    return ta.ATR(\
+        np.array(high).astype("double"),\
+        np.array(low).astype("double"),\
+        np.array(close).astype("double"),\
+        timeperiod=period)
 
 class BBandRSI(Strategy):
     n = 25 #移動平均日数
@@ -28,26 +36,49 @@ class BBandRSI(Strategy):
     upper_bound = 70
     lower_bound = 30
     rsi_window = 14
-    # n=35
-    # nu=2.8
-    # nd=2.6
-    # upper_bound=75
-    # lower_bound=25
-    # rsi_window=16
-
-# (n=30,nu=2.2,nd=2.7,upper_bound=60,lower_bound=40,rsi_window=10)_optimize.html
 
     def init(self):
         self.upper, self.lower = self.I(BB, self.data.Close, self.n, self.nu, self.nd)
         self.rsi = self.I(ta.RSI, self.data.Close, self.rsi_window)
 
     def next(self): # チャートデータの行ごとに呼び出される
+
         #+2σより大きいなら売り
         if self.data.Close > self.upper\
             or crossover(self.rsi, self.upper_bound):
             self.position.close()
         #-2σより小さいなら買い
         elif self.data.Close < self.lower\
+            and crossover(self.lower_bound, self.rsi):
+            if not self.position:
+                self.buy() # 買い
+
+class BBandRSI_WithStopLoss(Strategy):
+    n = 25 #移動平均日数
+    nu = 2 #何σか
+    nd = 2 #何σか
+    upper_bound = 70
+    lower_bound = 30
+    rsi_window = 14
+    stop_loss_perc = -7.5
+
+    def init(self):
+        self.upper, self.lower = self.I(BB, self.data.Close, self.n, self.nu, self.nd)
+        self.rsi = self.I(ta.RSI, self.data.Close, self.rsi_window)
+
+    def next(self): # チャートデータの行ごとに呼び出される
+        price = self.data.Close
+        #特定パーセントより損が大きければ損切
+        if self.position:
+            if self.position.pl_pct < self.stop_loss_perc:
+                print(self.position.pl_pct)
+                self.position.close()
+        #売り
+        if self.data.High > self.upper\
+            or crossover(self.rsi, self.upper_bound):
+            self.position.close()
+        #買い
+        elif self.data.Low < self.lower\
             or crossover(self.lower_bound, self.rsi):
             if not self.position:
                 self.buy() # 買い
@@ -61,12 +92,6 @@ class BBandRSI_WithShortPosition(Strategy):
     upper_bound = 70
     lower_bound = 30
     rsi_window = 14
-    # n=25
-    # nu=3.0
-    # nd=2.4
-    # upper_bound=70
-    # lower_bound=25
-    # rsi_window=22
 
     def init(self):
         self.upper, self.lower = self.I(BB, self.data.Close, self.n, self.nu, self.nd)
@@ -161,16 +186,6 @@ class EntryRSI50andExitBB_WithShortPosition(Strategy):
         if rsi_previous < 60:        
             if self.position and self.trades[-1].size < 0:
                 self.position.close()
-
-def CalcATR(phigh, plow, pclose, period):
-    high = pd.Series(phigh)
-    low = pd.Series(plow)
-    close = pd.Series(pclose)
-    return ta.ATR(\
-        np.array(high).astype("double"),\
-        np.array(low).astype("double"),\
-        np.array(close).astype("double"),\
-        timeperiod=period)
 
 class EntryRSI50andExitBBWithATRStopLoss(Strategy):
     #ボリンジャーバンド用パラメータ
