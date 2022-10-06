@@ -12,7 +12,6 @@ https://www.sevendata.co.jp/shihyou/mix/borimacd.html
 
 from backtesting import Strategy
 from backtesting.lib import crossover
-import pandas as pad
 import talib as ta
 
 def MACD(close, n1, n2, ns):
@@ -29,6 +28,7 @@ class MACDandBBD(Strategy):
     MACDshort = 12 #短期EMAの期間
     MACDlong = 26 #長期EMAの期間
     MACDsignal = 9 #シグナル（MACDのSMA）の期間
+    MACDThreshold = 0
     #ボリンジャー用パラメータ
     bolperiod = 25 #移動平均日数
     bolupper_sigma = 2 #何σか
@@ -39,11 +39,11 @@ class MACDandBBD(Strategy):
         self.bolupper_sigma, self.bollower_sigma = self.I(BB, self.data.Close, self.bolperiod, self.bolupper_sigma, self.bollower_sigma)
 
     def next(self): # チャートデータの行ごとに呼び出される
-        if self.macd[-1] > self.macdsignal\
+        if self.macd < self.MACDThreshold and self.macdsignal < self.MACDThreshold and crossover(self.macd, self.macdsignal)\
             and crossover(self.data.Close, self.bolupper_sigma):
             if not self.position:
                 self.buy() # 買い
-        elif crossover(self.macdsignal, self.macd):
+        elif self.macd > self.MACDThreshold and self.macdsignal > self.MACDThreshold and crossover(self.macdsignal, self.macd):
             self.position.close() # 手じまい
 
 class MACDandBBD_WithShortPosition(Strategy):
@@ -51,6 +51,7 @@ class MACDandBBD_WithShortPosition(Strategy):
     MACDshort = 12 #短期EMAの期間
     MACDlong = 26 #長期EMAの期間
     MACDsignal = 9 #シグナル（MACDのSMA）の期間
+    MACDThreshold = 0
     #ボリンジャー用パラメータ
     bolperiod = 25 #移動平均日数
     bolupper_sigma = 2 #何σか
@@ -61,12 +62,12 @@ class MACDandBBD_WithShortPosition(Strategy):
         self.bolupper_sigma, self.bollower_sigma = self.I(BB, self.data.Close, self.bolperiod, self.bolupper_sigma, self.bollower_sigma)
 
     def next(self): # チャートデータの行ごとに呼び出される
-        if self.macd[-1] > self.macdsignal\
+        if self.macd < self.MACDThreshold and self.macdsignal < self.MACDThreshold and crossover(self.macd, self.macdsignal)\
             and crossover(self.data.Close, self.bolupper_sigma):
             #買いシグナル
             if not self.position:
                 self.buy() # 買い
-        elif crossover(self.macdsignal, self.macd):
+        elif self.macd > self.MACDThreshold and self.macdsignal > self.MACDThreshold and crossover(self.macdsignal, self.macd):
             #売りシグナル
             if not self.position:
                 self.sell()
