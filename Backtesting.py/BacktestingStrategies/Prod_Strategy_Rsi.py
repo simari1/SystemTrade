@@ -4,7 +4,7 @@ import talib as ta
 from backtesting.lib import crossover
 
 class RsiOscillator(Strategy):
-    upper_bound=65
+    upper_bound=60
     lower_bound=40
     rsi_window=12
     atr_window=14
@@ -21,15 +21,16 @@ class RsiOscillator(Strategy):
     def next(self): # チャートデータの行ごとに呼び出される
         if self.position:
             price = self.trades[-1].entry_price
-            if self.data.Close[-1] > price + (self.atr[-1] * self.atr_takeprofit) or\
-                self.data.Close[-1] < price - (self.atr[-1] * self.atr_stoploss):
-                if self.data.Close[-1] > price + (self.atr[-1] * self.atr_takeprofit):
+            if self.data.Low[-1] > price + (self.atr[-1] * self.atr_takeprofit) or\
+                self.data.Low[-1] < price - (self.atr[-1] * self.atr_stoploss):
+                #ATR損切/利確
+                if self.data.Low[-1] > price + (self.atr[-1] * self.atr_takeprofit):
                     print("take profit  " + str(self.data.index[-1]) + "  " + str(price) + "  " + str(price + (self.atr[-1] * self.atr_takeprofit)))
-                if self.data.Close[-1] < price - (self.atr[-1] * self.atr_stoploss):
+                if self.data.Low[-1] < price - (self.atr[-1] * self.atr_stoploss):
                     print("stop loss  " + str(self.data.index[-1]) + "  " + str(price) + "  " + str(price - (self.atr[-1] * self.atr_stoploss)))
                 self.position.close()
-        elif crossover(self.rsi, self.upper_bound):
-            if self.position:
+            elif crossover(self.upper_bound, self.rsi):
+                #RSI利益確定
                 print("RSI close " + str(self.data.index[-1]))
                 self.position.close()
         elif crossover(self.lower_bound, self.rsi):
