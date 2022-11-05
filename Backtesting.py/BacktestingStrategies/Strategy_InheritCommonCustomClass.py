@@ -7,6 +7,12 @@ from backtesting.lib import crossover
 import BacktestingStrategies.Super_Strategies.CustomClass as ss
 importlib.reload(ss)
 class RsiOscillator(Strategy, ss.SuperStrategy):
+    """テスト用に共通のスーパークラスを継承したカスタムクラス
+
+    Args:
+        Strategy (_type_): Backtesting.pyのStrategyクラスを継承
+        ss (_type_): カスタムスーパークラスを継承したもの
+    """
     upper_bound=60
     lower_bound=40
     rsi_window=12
