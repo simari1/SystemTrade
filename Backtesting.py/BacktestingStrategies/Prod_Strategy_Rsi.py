@@ -1,12 +1,7 @@
-import importlib
 from backtesting import Strategy
 from backtesting.lib import crossover
 import talib as ta
-from backtesting.lib import crossover
-# from BacktestingStrategies.Super_Strategies.CustomClass import SuperStrategy
-import BacktestingStrategies.Super_Strategies.CustomClass as ss
-importlib.reload(ss)
-class RsiOscillator(Strategy, ss.SuperStrategy):
+class RsiOscillator(Strategy):
     upper_bound=60
     lower_bound=40
     rsi_window=12
@@ -20,9 +15,6 @@ class RsiOscillator(Strategy, ss.SuperStrategy):
         # param 2 --- pass data
         self.rsi = self.I(ta.RSI, self.data.Close, self.rsi_window)
         self.atr = self.I(ta.ATR, self.data.High , self.data.Low, self.data.Close, self.atr_window)
-
-        #Dataframe作成
-        self.setdata(self.data)
 
     def next(self): # チャートデータの行ごとに呼び出される
         if self.position:
