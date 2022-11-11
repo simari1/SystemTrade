@@ -27,5 +27,3 @@ https://www.insource.co.jp/python-gakuin/mail-backnumber/vol30.html
 
     Strategyの検証 Backtest Validation in Python (Fooled By Randomness)
     https://www.youtube.com/watch?v=lXJclKmQR-k&t=755s
-    
-TEST
