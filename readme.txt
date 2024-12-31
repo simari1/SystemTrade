@@ -3,6 +3,7 @@ https://www.insource.co.jp/python-gakuin/mail-backnumber/vol30.html
 
 ●ta-libインストール
 【python3】TA-Libをインストールする方法(Windows10) (zenn.dev)
+https://zenn.dev/whitecat_22/articles/9e30d88e31c3ec
 
 ●価格取得
     GetCompanies.py
@@ -28,4 +29,4 @@ https://www.insource.co.jp/python-gakuin/mail-backnumber/vol30.html
     Strategyの検証 Backtest Validation in Python (Fooled By Randomness)
     https://www.youtube.com/watch?v=lXJclKmQR-k&t=755s
     
-TEST
+devcontainer.json はテスト用追加しただけで動かないので、ごめんなさい。
